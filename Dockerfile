@@ -46,4 +46,5 @@ RUN rpm -ivh /tmp/jdk.rpm
 COPY startDB.sh /home/tibero
 RUN chmod +x /home/tibero/startDB.sh
 
-CMD su - $TB_USER -c /home/tibero/startDB.sh
+USER $TB_USER
+CMD /home/tibero/startDB.sh
