@@ -1,8 +1,10 @@
 version: '3'
 services:
-        all:
-                image: tibero6
-                container_name: tibero6
-                hostname: node
-                build:
-                        context: .
+  all:
+    env_file:
+      - tibero6.env
+    image: tibero6
+    container_name: tibero6
+    hostname: node
+    build:
+      context: .

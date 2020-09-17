@@ -1,4 +1,4 @@
-spool create_database.log
+spool /tmp/create_database.log
 create database "tibero"
 user sys identified by tibero
 maxinstances 8
