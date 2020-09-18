@@ -14,3 +14,10 @@ if not, install docker following the [instructions](https://docs.docker.com/engi
 ### 7. Run "docker-compose build" to build the image
 ### 8. Run "docker-compose up" to start the container for database creation (on first run)
 ### 9. Run "docker commit tibero6" to commit changes to the images.
+
+## For OKD deployemt
+### 1. oc login -u <username>
+### 2. docker login -u <username> -p $(oc whoami -t) 172.30.1.1:5000
+### 3. docker-compose build
+### 4. docker tag tibero6 172.30.1.1:5000/tmaxsoft/tibero6
+### 5. docker push 172.30.1.1:5000/tmaxsoft/tibero6
