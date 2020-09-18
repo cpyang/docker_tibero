@@ -1,0 +1,84 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: null
+  labels:
+    app: tibero6
+  name: tibero6
+  namespace: tmaxsoft
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: tibero6
+    deploymentconfig: tibero6
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+      creationTimestamp: null
+      labels:
+        app: tibero6
+        deploymentconfig: tibero6
+    spec:
+      containers:
+        - env:
+            - name: TB_SID
+              value: tibero
+            - name: TB_SYS_PASSWD
+              value: tibero
+            - name: MEMORY_TARGET
+              value: '4096'
+          image: >-
+            172.30.1.1:5000/tmaxsoft/tibero6@sha256:4927e757f4e6fa3de16a4577c7f4a8a8c79fd5e43614a09d53a3560590e0773f
+          imagePullPolicy: Always
+          name: tibero6
+          ports:
+            - containerPort: 8629
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /tibero/database
+              name: tibero-data
+            - mountPath: /tibero/instance
+              name: tibero-logs
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: tibero-data
+          persistentVolumeClaim:
+            claimName: tibero-data
+        - name: tibero-logs
+          persistentVolumeClaim:
+            claimName: tibero-logs
+  test: false
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - tibero6
+        from:
+          kind: ImageStreamTag
+          name: 'tibero6:latest'
+          namespace: tmaxsoft
+        lastTriggeredImage: >-
+          172.30.1.1:5000/tmaxsoft/tibero6@sha256:4927e757f4e6fa3de16a4577c7f4a8a8c79fd5e43614a09d53a3560590e0773f
+      type: ImageChange
+    - type: ConfigChange

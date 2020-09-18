@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 export PATH
-export TB_HOME=/opt/tmaxsoft/tibero6
+if [ ! -v TB_HOME ]; then
+	export TB_HOME=$TB_BASE/tibero
+fi
 if [ ! -v TB_SID ]; then
 	TB_SID=tibero
 fi
@@ -68,6 +70,7 @@ trap 'handle_kill' SIGKILL
 # create database on first boot
 ##################################################################
 if [ -d $TB_HOME/database/$TB_SID ]; then
+	echo Database $TB_SID exists. Starting database...
 	tbboot
 else
 #	exec /home/tibero/createDB.sh
