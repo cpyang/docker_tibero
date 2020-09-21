@@ -42,7 +42,7 @@ spec:
             - name: MEMORY_TARGET
               value: '4096'
           image: >-
-            172.30.1.1:5000/tmaxsoft/tibero6@sha256:4927e757f4e6fa3de16a4577c7f4a8a8c79fd5e43614a09d53a3560590e0773f
+            172.30.1.1:5000/tmaxsoft/tibero6
           imagePullPolicy: Always
           name: tibero6
           ports:
@@ -79,6 +79,6 @@ spec:
           name: 'tibero6:latest'
           namespace: tmaxsoft
         lastTriggeredImage: >-
-          172.30.1.1:5000/tmaxsoft/tibero6@sha256:4927e757f4e6fa3de16a4577c7f4a8a8c79fd5e43614a09d53a3560590e0773f
+          172.30.1.1:5000/tmaxsoft/tibero6
       type: ImageChange
     - type: ConfigChange
