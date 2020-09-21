@@ -70,6 +70,29 @@ trap 'handle_kill' SIGKILL
 # create database on first boot
 ##################################################################
 if [ -d $TB_HOME/database/$TB_SID ]; then
+	if [ ! -f $TB_HOME/config/$TB_SID.tip ]; then
+		export LD_LIBRARY_PATH=$TB_HOME/lib:$TB_HOME/client/lib
+		export JAVA_HOME=/usr/java/latest
+		export PATH=$PATH:$TB_HOME/bin:$TB_HOME/client/bin:$JAVA_HOME/bin
+		ulimit -c 0
+		if [ -f $TB_HOME/database/$TB_SID.tip ]; then
+			cp $TB_HOME/database/$TB_SID/$TB_SID.tip $TB_HOME/config/$TB_SID.tip
+			cp $TB_HOME/database/$TB_SID/tbdsn.tbr $TB_HOME/client/config/tbdsn.tbr
+		else
+			$TB_HOME/config/gen_tip.sh
+			if [ ! -v MEMORY_TARGET ]; then
+				MEMORY_TARGET=2048
+			fi
+			TOTAL_SHM_SIZE=$(( $MEMORY_TARGET / 2 ))
+			sed -i "s/TOTAL_SHM_SIZE=/&`echo $TOTAL_SHM_SIZE`M#/" $TB_HOME/config/tibero.tip
+			sed -i "s/MEMORY_TARGET=/&`echo $MEMORY_TARGET`M#/" $TB_HOME/config/tibero.tip
+			echo _PSM_BOOT_JEPA=Y >> $TB_HOME/config/tibero.tip
+			echo BOOT_WITH_AUTO_DOWN_CLEAN=Y >> $TB_HOME/config/tibero.tip
+			cat $TB_HOME/config/tibero.tip
+			echo "epa=((EXTPROC=(LANG=JAVA)(LISTENER=(HOST=localhost)(PORT=9390))))" >> $TB_HOME/client/config/tbdsn.tbr
+			cp $TB_HOME/config/$TB_SID.tip $TB_HOME/database/$TB_SID/$TB_SID.tip
+		fi
+	fi
 	echo Database $TB_SID exists. Starting database...
 	tbboot
 else
